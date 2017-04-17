@@ -1,0 +1,16 @@
+/back-end/rest_videos/app/config/parameters.yml
+/back-end/rest_videos/build/
+/back-end/rest_videos/phpunit.xml
+/back-end/rest_videos/var/*
+!/var/cache
+/back-end/rest_videos/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/back-end/rest_videos/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/back-end/rest_videos/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
+/back-end/rest_videos/vendor/
+/back-end/rest_videos/web/bundles/
