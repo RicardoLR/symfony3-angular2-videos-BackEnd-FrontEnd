@@ -4,6 +4,13 @@
 #     resource: "@BackendBundle/Resources/config/routing.yml"
 #     prefix:   /
 
+# ruta por dafault
+# app:
+#     resource: "@AppBundle/Controller/"
+#     type:     annotation
+
+
+# usamos una alterna generada
 app:
-    resource: "@AppBundle/Controller/"
-    type:     annotation
+    resource: "@AppBundle/Resources/config/routing.yml"
+    prefix: /

@@ -46,13 +46,13 @@ class UserController extends Controller {
 			$surname = (isset($params->surname) && ctype_alpha($params->surname)) ? $params->surname : null;
 			$password = (isset($params->password)) ? $params->password : null;
 
+			// Validamos campo email en body
 			$emailContraint = new Assert\Email();
-			$emailContraint->message = "This email is not valid !!";
+			$emailContraint->message = "This email is not valid";
 			$validate_email = $this->get("validator")->validate($email, $emailContraint);
 
-			if ($email != null && count($validate_email) == 0 &&
-					$password != null && $name != null && $surname != null
-			) {
+			if ($email != null && count($validate_email) == 0 && $password != null && $name != null && $surname != null) {
+
 				$user = new User();
 				$user->setCreatedAt($createdAt);
 				$user->setImage($image);
@@ -62,8 +62,8 @@ class UserController extends Controller {
 				$user->setSurname($surname);
 
 				//Cifrar la password
-				$pwd = hash('sha256', $password);
-				$user->setPassword($pwd);
+				$pwd_cifrada = hash('sha256', $password);
+				$user->setPassword($pwd_cifrada);
 
 				$em = $this->getDoctrine()->getManager();
 				$isset_user = $em->getRepository("BackendBundle:User")->findBy(
@@ -75,17 +75,21 @@ class UserController extends Controller {
 					$em->persist($user);
 					$em->flush();
 
+					$data["user"] = $user;
 					$data["status"] = 'success';
 					$data["code"] = 200;
-					$data["msg"] = 'New user created !!';
+					$data["msg"] = 'New user created';
+
 				} else {
 					$data = array(
 						"status" => "error",
 						"code" => 400,
-						"msg" => "User not created, duplicated!!"
+						"msg" => "User not created, duplicated"
 					);
 				}
+
 			}
+
 		}
 
 		return $helpers->json($data);
@@ -155,9 +159,10 @@ class UserController extends Controller {
 						$em->persist($user);
 						$em->flush();
 
+						$data["user"] = $user;
 						$data["status"] = 'success';
 						$data["code"] = 200;
-						$data["msg"] = 'User updated !!';
+						$data["msg"] = 'User updated';
 					} else {
 						$data = array(
 							"status" => "error",
@@ -178,6 +183,15 @@ class UserController extends Controller {
 		return $helpers->json($data);
 	}
 
+	/** cargar imagenes
+	POST   	http://localhost/curso%20symfony/symfony/web/app_dev.php/user/upload-image-user
+
+	"Content-Type"		:		"application/x-www-form-urlencoded"
+
+	authorization 		:
+
+	image 						:
+	*/
 	public function uploadImageAction(Request $request){
 		$helpers = $this->get("app.helpers");
 
@@ -192,15 +206,18 @@ class UserController extends Controller {
 				"id" => $identity->sub
 			));
 
-			// upload file
+			/* =====================================
+				upload file  moviendolo a carpeta de nuestro servidor move("uploads/users", )
+				y direccion a DB
+			===================================== */
 			$file = $request->files->get("image");
 
 			if(!empty($file) && $file != null){
 				$ext = $file->guessExtension();
 
-				if($ext == "jpeg" || $ext == "jpg" ||
-				   $ext == "png" || $ext == "gif"){
+				if($ext == "jpeg" || $ext == "jpg" || $ext == "png" || $ext == "gif"){
 
+					// nombre del archivo sera la fecha y su extencion, tambien podriamos pober /carpeta_id_user/imagenes/files
 					$file_name = time().".".$ext;
 					$file->move("uploads/users", $file_name);
 

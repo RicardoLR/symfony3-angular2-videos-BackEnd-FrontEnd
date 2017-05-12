@@ -7,3 +7,13 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+    app.jwt_auth:
+        class: AppBundle\Services\JwtAuth
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    # inyectaos a nuestro helper nuestro otro helper src\AppBundle\Services\JwtAuth.php
+    # para tener metodos disponibles en Helpers.php
+    app.helpers:
+        class: AppBundle\Services\Helpers
+        arguments: ["@app.jwt_auth"]
